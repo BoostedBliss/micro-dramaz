@@ -1,0 +1,6 @@
+{
+  "name": "SnapStory AI - Snapchat Movie Storyboard Studio",
+  "description": "Professional 10-second increment storyboard generator for Snapchat movies with AI character consistency, lighting and composition editing suite, and cloud collaboration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
