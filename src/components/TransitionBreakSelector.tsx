@@ -9,15 +9,13 @@ import {
   Sun,
   ZoomIn,
   ChevronDown,
-  Sliders,
   Check,
-  Sparkles,
   Volume2,
   Copy,
   Clock,
   Play,
 } from "lucide-react";
-import { BeatTransition, TransitionType, SceneBeat } from "../types";
+import { BeatTransition, TransitionType } from "../types";
 import {
   TRANSITION_PRESETS,
   getTransitionMeta,
