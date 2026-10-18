@@ -8,8 +8,6 @@ import {
   Archive,
   CheckCircle2,
   Sparkles,
-  ArrowRight,
-  Layers,
 } from "lucide-react";
 import { ProjectData } from "../types";
 import {
