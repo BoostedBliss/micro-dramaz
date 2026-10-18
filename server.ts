@@ -11,6 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.disable("x-powered-by");
 const PORT = 3000;
 
 app.use(express.json({ limit: "2mb" }));
@@ -182,7 +183,7 @@ Break down the story into 10-second chronological increments.`;
   } catch (error: any) {
     console.error("Script parsing error:", error);
     return res.status(500).json({
-      error: error.message || "Failed to parse script.",
+      error: "An internal server error occurred while parsing the script.",
     });
   }
 });
@@ -331,7 +332,7 @@ app.post("/api/generate-storyboard-image", async (req, res) => {
   } catch (error: any) {
     console.error("Image generation error:", error);
     return res.status(500).json({
-      error: error.message || "Failed to generate storyboard image.",
+      error: "An internal server error occurred while generating the storyboard image.",
     });
   }
 });
@@ -397,7 +398,7 @@ Visual Style: Professional film storyboard concept sketch, chiaroscuro shading, 
     });
   } catch (error: any) {
     console.error("Placeholder generation error:", error);
-    return res.status(500).json({ error: error.message || "Failed to generate placeholder thumbnail." });
+    return res.status(500).json({ error: "An internal server error occurred while generating the placeholder thumbnail." });
   }
 });
 
@@ -484,7 +485,7 @@ app.post("/api/edit-storyboard-image", async (req, res) => {
   } catch (error: any) {
     console.error("Image editing error:", error);
     return res.status(500).json({
-      error: error.message || "Failed to edit storyboard image.",
+      error: "An internal server error occurred while editing the storyboard image.",
     });
   }
 });
@@ -615,7 +616,7 @@ Return ONLY a valid JSON array of objects with the exact schema:
     });
   } catch (error: any) {
     console.error("Apply global style error:", error);
-    return res.status(500).json({ error: error.message || "Failed to apply global style preset." });
+    return res.status(500).json({ error: "An internal server error occurred while applying the global style preset." });
   }
 });
 
@@ -694,7 +695,7 @@ Active Characters: ${JSON.stringify(projectContext.characters || [])}`;
   } catch (error: any) {
     console.error("Chat error:", error);
     return res.status(500).json({
-      error: error.message || "Failed to process chat message.",
+      error: "An internal server error occurred while processing the chat message.",
     });
   }
 });
@@ -727,7 +728,8 @@ app.post("/api/cloud-sync/save", (req, res) => {
       projectId,
     });
   } catch (err: any) {
-    return res.status(500).json({ error: err.message });
+    console.error("Cloud sync save error:", err);
+    return res.status(500).json({ error: "An internal server error occurred while saving the project." });
   }
 });
 
