@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import crypto from "crypto";
 import dotenv from "dotenv";
 import { GoogleGenAI, Type } from "@google/genai";
 import { createServer as createViteServer } from "vite";
@@ -706,7 +707,7 @@ app.post("/api/cloud-sync/save", (req, res) => {
     });
 
     collaborationActivityLog.unshift({
-      id: Math.random().toString(36).substring(2, 9),
+      id: crypto.randomUUID(),
       projectId,
       user,
       action: `Saved changes to project "${projectData?.title || projectId}"`,
