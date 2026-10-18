@@ -8,11 +8,7 @@ import {
   Volume2,
   VolumeX,
   Sparkles,
-  ArrowRight,
-  Share2,
   Zap,
-  Layers,
-  Moon,
 } from "lucide-react";
 import { SceneBeat, BeatTransition } from "../types";
 import {
