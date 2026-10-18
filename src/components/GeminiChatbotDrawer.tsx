@@ -6,13 +6,10 @@ import {
   Bot,
   User,
   Trash2,
-  SlidersHorizontal,
-  ChevronDown,
   Film,
   Camera,
   PenTool,
   Users,
-  Zap,
 } from "lucide-react";
 import { ChatMessage, AssistantRole, AssistantModel, ProjectData } from "../types";
 
