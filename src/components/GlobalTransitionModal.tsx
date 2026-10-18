@@ -15,7 +15,7 @@ import {
   Film,
   Copy,
 } from "lucide-react";
-import { ProjectData, BeatTransition, TransitionType, SceneBeat } from "../types";
+import { ProjectData, BeatTransition, TransitionType } from "../types";
 import {
   TRANSITION_PRESETS,
   DEFAULT_BEAT_TRANSITION,
