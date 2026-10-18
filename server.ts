@@ -586,13 +586,17 @@ Return ONLY a valid JSON array of objects with the exact schema:
       }
     }
 
+    const prefixRegex = /^Vertical 9:16 cinematic storyboard (?:still|frame).*?:/i;
+    const splitRegex = /(?:Visual Cinematic Style:|Production Quality:)/i;
+    const trailingPunctuationRegex = /[.,;]+$/;
+
     // Deterministic fallback / fast local transform
     const updatedScenes = scenes.map((s: any) => {
       let baseAction = s.visualAction || s.imagePrompt || s.title;
       // Strip common prefixes
-      baseAction = baseAction.replace(/^Vertical 9:16 cinematic storyboard (?:still|frame).*?:/i, "").trim();
-      baseAction = baseAction.split(/(?:Visual Cinematic Style:|Production Quality:)/i)[0].trim();
-      baseAction = baseAction.replace(/[.,;]+$/, "").trim();
+      baseAction = baseAction.replace(prefixRegex, "").trim();
+      baseAction = baseAction.split(splitRegex)[0].trim();
+      baseAction = baseAction.replace(trailingPunctuationRegex, "").trim();
 
       const customText = customStylePrompt?.trim() ? ` ${customStylePrompt.trim()}.` : "";
       const updatedPrompt = `Vertical 9:16 cinematic storyboard still: ${baseAction}. Visual Cinematic Style: ${stylePreset}. ${stylePromptModifier}${customText} Camera Framing: ${s.cameraSetup || "Vertical 9:16 cinema framing"}. Production Quality: Masterclass cinema storyboard, color graded, photorealistic tension, 8k resolution look.`;
