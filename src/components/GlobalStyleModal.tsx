@@ -5,13 +5,7 @@ import {
   Sparkles,
   Check,
   Eye,
-  Sliders,
   RefreshCw,
-  Layers,
-  ArrowRight,
-  Info,
-  Film,
-  Sun,
   Wand2,
 } from "lucide-react";
 import { ProjectData, SceneBeat } from "../types";

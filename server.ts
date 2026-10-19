@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import crypto from "crypto";
 import dotenv from "dotenv";
 import { GoogleGenAI, Type } from "@google/genai";
 import { createServer as createViteServer } from "vite";
@@ -11,10 +12,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.disable("x-powered-by");
 const PORT = 3000;
 
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
 function getGenAI() {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -182,7 +184,7 @@ Break down the story into 10-second chronological increments.`;
   } catch (error: any) {
     console.error("Script parsing error:", error);
     return res.status(500).json({
-      error: error.message || "Failed to parse script.",
+      error: "An internal server error occurred while parsing the script.",
     });
   }
 });
@@ -331,7 +333,7 @@ app.post("/api/generate-storyboard-image", async (req, res) => {
   } catch (error: any) {
     console.error("Image generation error:", error);
     return res.status(500).json({
-      error: error.message || "Failed to generate storyboard image.",
+      error: "An internal server error occurred while generating the storyboard image.",
     });
   }
 });
@@ -397,7 +399,7 @@ Visual Style: Professional film storyboard concept sketch, chiaroscuro shading, 
     });
   } catch (error: any) {
     console.error("Placeholder generation error:", error);
-    return res.status(500).json({ error: error.message || "Failed to generate placeholder thumbnail." });
+    return res.status(500).json({ error: "An internal server error occurred while generating the placeholder thumbnail." });
   }
 });
 
@@ -484,7 +486,7 @@ app.post("/api/edit-storyboard-image", async (req, res) => {
   } catch (error: any) {
     console.error("Image editing error:", error);
     return res.status(500).json({
-      error: error.message || "Failed to edit storyboard image.",
+      error: "An internal server error occurred while editing the storyboard image.",
     });
   }
 });
@@ -586,13 +588,17 @@ Return ONLY a valid JSON array of objects with the exact schema:
       }
     }
 
+    const prefixRegex = /^Vertical 9:16 cinematic storyboard (?:still|frame).*?:/i;
+    const splitRegex = /(?:Visual Cinematic Style:|Production Quality:)/i;
+    const trailingPunctuationRegex = /[.,;]+$/;
+
     // Deterministic fallback / fast local transform
     const updatedScenes = scenes.map((s: any) => {
       let baseAction = s.visualAction || s.imagePrompt || s.title;
       // Strip common prefixes
-      baseAction = baseAction.replace(/^Vertical 9:16 cinematic storyboard (?:still|frame).*?:/i, "").trim();
-      baseAction = baseAction.split(/(?:Visual Cinematic Style:|Production Quality:)/i)[0].trim();
-      baseAction = baseAction.replace(/[.,;]+$/, "").trim();
+      baseAction = baseAction.replace(prefixRegex, "").trim();
+      baseAction = baseAction.split(splitRegex)[0].trim();
+      baseAction = baseAction.replace(trailingPunctuationRegex, "").trim();
 
       const customText = customStylePrompt?.trim() ? ` ${customStylePrompt.trim()}.` : "";
       const updatedPrompt = `Vertical 9:16 cinematic storyboard still: ${baseAction}. Visual Cinematic Style: ${stylePreset}. ${stylePromptModifier}${customText} Camera Framing: ${s.cameraSetup || "Vertical 9:16 cinema framing"}. Production Quality: Masterclass cinema storyboard, color graded, photorealistic tension, 8k resolution look.`;
@@ -611,7 +617,7 @@ Return ONLY a valid JSON array of objects with the exact schema:
     });
   } catch (error: any) {
     console.error("Apply global style error:", error);
-    return res.status(500).json({ error: error.message || "Failed to apply global style preset." });
+    return res.status(500).json({ error: "An internal server error occurred while applying the global style preset." });
   }
 });
 
@@ -690,7 +696,7 @@ Active Characters: ${JSON.stringify(projectContext.characters || [])}`;
   } catch (error: any) {
     console.error("Chat error:", error);
     return res.status(500).json({
-      error: error.message || "Failed to process chat message.",
+      error: "An internal server error occurred while processing the chat message.",
     });
   }
 });
@@ -706,7 +712,7 @@ app.post("/api/cloud-sync/save", (req, res) => {
     });
 
     collaborationActivityLog.unshift({
-      id: Math.random().toString(36).substring(2, 9),
+      id: crypto.randomUUID(),
       projectId,
       user,
       action: `Saved changes to project "${projectData?.title || projectId}"`,
@@ -723,7 +729,8 @@ app.post("/api/cloud-sync/save", (req, res) => {
       projectId,
     });
   } catch (err: any) {
-    return res.status(500).json({ error: err.message });
+    console.error("Cloud sync save error:", err);
+    return res.status(500).json({ error: "An internal server error occurred while saving the project." });
   }
 });
 

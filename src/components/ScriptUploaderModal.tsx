@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Upload, Sparkles, FileText, CheckCircle2, AlertCircle, ArrowRight, Palette } from "lucide-react";
+import { X, Upload, Sparkles, FileText, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react";
 import { ProjectData } from "../types";
 import { getThematicPlaceholderThumbnail } from "../utils/placeholderThumbnails";
 import { GLOBAL_STYLE_PRESETS } from "../utils/stylePresets";

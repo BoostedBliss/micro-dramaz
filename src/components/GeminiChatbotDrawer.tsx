@@ -6,13 +6,10 @@ import {
   Bot,
   User,
   Trash2,
-  SlidersHorizontal,
-  ChevronDown,
   Film,
   Camera,
   PenTool,
   Users,
-  Zap,
 } from "lucide-react";
 import { ChatMessage, AssistantRole, AssistantModel, ProjectData } from "../types";
 
@@ -229,12 +226,15 @@ export const GeminiChatbotDrawer: React.FC<GeminiChatbotDrawerProps> = ({
             onClick={clearHistory}
             className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 transition-colors"
             title="Clear chat history"
+            aria-label="Clear chat history"
           >
             <Trash2 className="w-4 h-4" />
           </button>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+            title="Close chat"
+            aria-label="Close chat"
           >
             <X className="w-4 h-4" />
           </button>
@@ -373,6 +373,8 @@ export const GeminiChatbotDrawer: React.FC<GeminiChatbotDrawerProps> = ({
             type="submit"
             disabled={isLoading || !input.trim()}
             className="p-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+            title="Send message"
+            aria-label="Send message"
           >
             <Send className="w-4 h-4" />
           </button>

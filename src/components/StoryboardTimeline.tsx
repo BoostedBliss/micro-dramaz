@@ -142,51 +142,60 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
     let currentScenes = [...project.scenes];
     let count = 0;
 
-    for (const scene of targetScenes) {
-      count++;
-      setBatchProgress({ current: count, total: targetScenes.length });
-      setGeneratingBeatId(scene.id);
+    const CONCURRENCY_LIMIT = 3;
+    for (let i = 0; i < targetScenes.length; i += CONCURRENCY_LIMIT) {
+      const chunk = targetScenes.slice(i, i + CONCURRENCY_LIMIT);
 
-      try {
-        const relevantCharacters = project.characters
-          .filter((c) => scene.charactersInScene.includes(c.name))
-          .map((c) => `${c.name} (${c.appearanceDescription}, wearing: ${c.signatureWardrobe})`)
-          .join("; ");
+      await Promise.all(
+        chunk.map(async (scene) => {
+          try {
+            const relevantCharacters = project.characters
+              .filter((c) => scene.charactersInScene.includes(c.name))
+              .map((c) => `${c.name} (${c.appearanceDescription}, wearing: ${c.signatureWardrobe})`)
+              .join("; ");
 
-        const res = await fetch("/api/generate-storyboard-image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            scenePrompt: scene.imagePrompt || scene.visualAction,
-            stylePreset: project.stylePreset || project.visualTone,
-            characterBible: relevantCharacters,
-            cameraSetup: scene.cameraSetup,
-            lightingSetup: scene.lighting,
-            imageSize: project.selectedImageSize || "2K",
-            aspectRatio: "9:16",
-          }),
-        });
+            const res = await fetch("/api/generate-storyboard-image", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                scenePrompt: scene.imagePrompt || scene.visualAction,
+                stylePreset: project.stylePreset || project.visualTone,
+                characterBible: relevantCharacters,
+                cameraSetup: scene.cameraSetup,
+                lightingSetup: scene.lighting,
+                imageSize: project.selectedImageSize || "2K",
+                aspectRatio: "9:16",
+              }),
+            });
 
-        if (res.ok) {
-          const data = await res.json();
-          if (data.imageUrl) {
-            currentScenes = currentScenes.map((s) =>
-              s.id === scene.id
-                ? {
-                    ...s,
-                    generatedImageUrl: data.imageUrl,
-                    imageSize: project.selectedImageSize || "2K",
-                    aspectRatio: "9:16" as const,
-                    status: "approved" as const,
-                  }
-                : s
-            );
-            onUpdateProject({ scenes: currentScenes });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.imageUrl) {
+                currentScenes = currentScenes.map((s) =>
+                  s.id === scene.id
+                    ? {
+                        ...s,
+                        generatedImageUrl: data.imageUrl,
+                        imageSize: project.selectedImageSize || "2K",
+                        aspectRatio: "9:16" as const,
+                        status: "approved" as const,
+                      }
+                    : s
+                );
+              }
+            }
+          } catch (err) {
+            console.error("Batch item error:", err);
+          } finally {
+            count++;
+            // Update progress in the state
+            setBatchProgress({ current: count, total: targetScenes.length });
           }
-        }
-      } catch (err) {
-        console.error("Batch item error:", err);
-      }
+        })
+      );
+
+      // Update the project state after each chunk finishes to avoid too frequent react re-renders
+      onUpdateProject({ scenes: currentScenes });
     }
 
     setGeneratingBeatId(null);
