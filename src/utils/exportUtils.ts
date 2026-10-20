@@ -117,7 +117,7 @@ export async function exportProductionBundle(project: ProjectData): Promise<void
 
   // Add images folder
   const imagesFolder = folder.folder("storyboard_frames_9x16");
-  for (const scene of project.scenes) {
+  const imagePromises = project.scenes.map(async (scene) => {
     if (scene.generatedImageUrl) {
       try {
         let blob: Blob | null = null;
@@ -146,7 +146,9 @@ export async function exportProductionBundle(project: ProjectData): Promise<void
         console.warn(`Could not bundle image for beat ${scene.beatNumber}:`, err);
       }
     }
-  }
+  });
+
+  await Promise.all(imagePromises);
 
   // Generate ZIP blob and trigger download
   const content = await zip.generateAsync({ type: "blob" });

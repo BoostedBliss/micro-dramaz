@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 import { generateSvgStoryboardPlaceholder, getThematicPlaceholderThumbnail } from "../placeholderThumbnails";
 
 describe("generateSvgStoryboardPlaceholder", () => {
@@ -9,10 +9,10 @@ describe("generateSvgStoryboardPlaceholder", () => {
       title: "Test Title"
     });
 
-    expect(result).toStartWith("data:image/svg+xml;utf8,");
+    expect(result).toMatch(/^data:image\/svg\+xml;utf8,/);
     const svgContent = decodeURIComponent(result.replace("data:image/svg+xml;utf8,", ""));
-    expect(svgContent).toStartWith("<svg");
-    expect(svgContent).toEndWith("</svg>");
+    expect(svgContent).toMatch(/^<svg/);
+    expect(svgContent).toMatch(/<\/svg>$/);
   });
 
   it("should embed required options correctly", () => {
