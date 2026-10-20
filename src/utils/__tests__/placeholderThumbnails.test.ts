@@ -9,10 +9,10 @@ describe("generateSvgStoryboardPlaceholder", () => {
       title: "Test Title"
     });
 
-    expect(result).toMatch(/^data:image\/svg\+xml;utf8,/);
+    expect(result.startsWith("data:image/svg+xml;utf8,")).toBe(true);
     const svgContent = decodeURIComponent(result.replace("data:image/svg+xml;utf8,", ""));
-    expect(svgContent).toMatch(/^<svg/);
-    expect(svgContent).toMatch(/<\/svg>$/);
+    expect(svgContent.startsWith("<svg")).toBe(true);
+    expect(svgContent.endsWith("</svg>")).toBe(true);
   });
 
   it("should embed required options correctly", () => {
