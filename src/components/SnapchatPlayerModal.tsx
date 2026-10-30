@@ -135,6 +135,8 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
       <button
         onClick={onClose}
         className="absolute top-4 right-4 z-50 p-2 rounded-full bg-neutral-900/80 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-neutral-700"
+        aria-label="Close player"
+        title="Close player"
       >
         <X className="w-5 h-5" />
       </button>
@@ -191,12 +193,16 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
             <button
               onClick={() => setIsMuted(!isMuted)}
               className="p-1 hover:text-amber-400"
+              aria-label={isMuted ? "Unmute" : "Mute"}
+              title={isMuted ? "Unmute" : "Mute"}
             >
               {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
             </button>
             <button
               onClick={() => setIsPlaying(!isPlaying)}
               className="p-1 hover:text-amber-400"
+              aria-label={isPlaying ? "Pause" : "Play"}
+              title={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
             </button>
@@ -388,6 +394,8 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
               onClick={handlePrev}
               disabled={currentSceneIndex === 0}
               className="p-1 rounded-full hover:text-white disabled:opacity-30"
+              aria-label="Previous beat"
+              title="Previous beat"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -398,6 +406,8 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
               onClick={handleNext}
               disabled={currentSceneIndex === scenes.length - 1}
               className="p-1 rounded-full hover:text-white disabled:opacity-30"
+              aria-label="Next beat"
+              title="Next beat"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
