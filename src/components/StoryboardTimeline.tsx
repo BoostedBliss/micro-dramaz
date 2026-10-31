@@ -847,6 +847,7 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
                           disabled={index === 0}
                           className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 disabled:opacity-30"
                           title="Move beat earlier in sequence"
+                          aria-label="Move beat earlier in sequence"
                         >
                           <MoveUp className="w-3.5 h-3.5" />
                         </button>
@@ -855,6 +856,7 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
                           disabled={index === project.scenes.length - 1}
                           className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 disabled:opacity-30"
                           title="Move beat later in sequence"
+                          aria-label="Move beat later in sequence"
                         >
                           <MoveDown className="w-3.5 h-3.5" />
                         </button>
@@ -862,6 +864,7 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
                           onClick={() => handleDeleteBeat(scene.id)}
                           className="p-1.5 rounded-lg text-neutral-400 hover:text-red-400 hover:bg-neutral-800"
                           title="Delete beat"
+                          aria-label="Delete beat"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
