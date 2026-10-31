@@ -37,7 +37,8 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
   const [isMuted, setIsMuted] = useState(false);
   const [isEndReached, setIsEndReached] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [activeTransition, setActiveTransition] = useState<BeatTransition | null>(null);
+  const [activeTransition, setActiveTransition] =
+    useState<BeatTransition | null>(null);
 
   const scene = scenes[currentSceneIndex];
   const TEN_SECONDS_MS = 10000;
@@ -94,7 +95,13 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
     }, INTERVAL_MS);
 
     return () => clearInterval(timer);
-  }, [isPlaying, currentSceneIndex, scenes.length, isEndReached, isTransitioning]);
+  }, [
+    isPlaying,
+    currentSceneIndex,
+    scenes.length,
+    isEndReached,
+    isTransitioning,
+  ]);
 
   const handleNext = () => {
     if (currentSceneIndex < scenes.length - 1) {
@@ -184,7 +191,8 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
                 </span>
               </div>
               <div className="text-[10px] text-white/80 drop-shadow">
-                Beat {currentSceneIndex + 1} of {scenes.length} &bull; {scene?.timecode}
+                Beat {currentSceneIndex + 1} of {scenes.length} &bull;{" "}
+                {scene?.timecode}
               </div>
             </div>
           </div>
@@ -196,7 +204,11 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
               aria-label={isMuted ? "Unmute" : "Mute"}
               title={isMuted ? "Unmute" : "Mute"}
             >
-              {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+              {isMuted ? (
+                <VolumeX className="w-3.5 h-3.5" />
+              ) : (
+                <Volume2 className="w-3.5 h-3.5" />
+              )}
             </button>
             <button
               onClick={() => setIsPlaying(!isPlaying)}
@@ -204,7 +216,11 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
               aria-label={isPlaying ? "Pause" : "Play"}
               title={isPlaying ? "Pause" : "Play"}
             >
-              {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+              {isPlaying ? (
+                <Pause className="w-3.5 h-3.5" />
+              ) : (
+                <Play className="w-3.5 h-3.5 fill-current" />
+              )}
             </button>
           </div>
         </div>
@@ -212,9 +228,10 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
         {/* Screen Content */}
         <div className="relative flex-1 bg-neutral-950 overflow-hidden">
           {/* Main Visual Image */}
-          {(scene?.generatedImageUrl || scene?.placeholderThumbnailUrl) ? (
+          {scene?.generatedImageUrl || scene?.placeholderThumbnailUrl ? (
             <div className="relative w-full h-full">
               <img
+                loading="lazy"
                 src={scene.generatedImageUrl || scene.placeholderThumbnailUrl}
                 alt={scene.title}
                 referrerPolicy="no-referrer"
@@ -230,8 +247,12 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-neutral-400 bg-neutral-900">
               <Sparkles className="w-8 h-8 text-amber-500 mb-2 opacity-60" />
-              <div className="font-bold text-xs text-neutral-200">Beat {scene?.beatNumber} Draft</div>
-              <p className="text-[11px] text-neutral-500 mt-1 max-w-xs">{scene?.visualAction}</p>
+              <div className="font-bold text-xs text-neutral-200">
+                Beat {scene?.beatNumber} Draft
+              </div>
+              <p className="text-[11px] text-neutral-500 mt-1 max-w-xs">
+                {scene?.visualAction}
+              </p>
             </div>
           )}
 
@@ -277,7 +298,8 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
               <div className="animate-fadeIn flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md border border-amber-500/40 text-[9px] font-bold text-amber-300 shadow-lg">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
                 <span>
-                  Break: {getTransitionMeta(scene?.transitionToNext?.type).shortName}
+                  Break:{" "}
+                  {getTransitionMeta(scene?.transitionToNext?.type).shortName}
                 </span>
               </div>
             )}
@@ -290,24 +312,26 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
                 activeTransition.type === "fade_to_black"
                   ? "bg-black animate-pulse"
                   : activeTransition.type === "fade_to_white"
-                  ? "bg-white animate-pulse"
-                  : activeTransition.type === "cross_dissolve"
-                  ? "bg-black/60 backdrop-blur-md"
-                  : activeTransition.type === "slide_in"
-                  ? "bg-neutral-900 border-l-4 border-amber-500 animate-in slide-in-from-right duration-300"
-                  : activeTransition.type === "glitch_flash"
-                  ? "bg-fuchsia-950/80 invert animate-ping"
-                  : activeTransition.type === "whip_pan"
-                  ? "blur-md bg-neutral-900"
-                  : activeTransition.type === "zoom_in"
-                  ? "scale-125 bg-black/50"
-                  : "bg-black"
+                    ? "bg-white animate-pulse"
+                    : activeTransition.type === "cross_dissolve"
+                      ? "bg-black/60 backdrop-blur-md"
+                      : activeTransition.type === "slide_in"
+                        ? "bg-neutral-900 border-l-4 border-amber-500 animate-in slide-in-from-right duration-300"
+                        : activeTransition.type === "glitch_flash"
+                          ? "bg-fuchsia-950/80 invert animate-ping"
+                          : activeTransition.type === "whip_pan"
+                            ? "blur-md bg-neutral-900"
+                            : activeTransition.type === "zoom_in"
+                              ? "scale-125 bg-black/50"
+                              : "bg-black"
               }`}
             >
               {/* Cinematic Transition Badge */}
               <div className="px-3.5 py-1.5 rounded-full bg-black/85 backdrop-blur-md border border-amber-500/60 text-white font-mono text-[11px] font-bold shadow-2xl flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                <span>{getTransitionMeta(activeTransition.type).shortName}</span>
+                <span>
+                  {getTransitionMeta(activeTransition.type).shortName}
+                </span>
                 <span className="text-amber-300/80 text-[10px] font-normal">
                   ({activeTransition.durationSeconds ?? 0.6}s)
                 </span>
@@ -360,9 +384,12 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
               <div className="w-12 h-12 rounded-full bg-amber-500 text-neutral-950 font-black flex items-center justify-center text-xl mb-3 shadow-lg shadow-amber-500/30">
                 S
               </div>
-              <h3 className="text-lg font-extrabold tracking-tight">INSTALLMENT 1 COMPLETE</h3>
+              <h3 className="text-lg font-extrabold tracking-tight">
+                INSTALLMENT 1 COMPLETE
+              </h3>
               <p className="text-xs text-neutral-400 mt-1 max-w-xs">
-                You've reached the micro-season cliffhanger. Will Maya survive Penthouse 404?
+                You've reached the micro-season cliffhanger. Will Maya survive
+                Penthouse 404?
               </p>
 
               <div className="my-6 p-4 rounded-xl bg-neutral-900 border border-neutral-800 text-xs text-amber-300 font-semibold max-w-xs">
