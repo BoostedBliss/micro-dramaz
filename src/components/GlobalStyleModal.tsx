@@ -36,10 +36,11 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
     GLOBAL_STYLE_PRESETS.find((p) => p.name === project.stylePreset) ||
     GLOBAL_STYLE_PRESETS[0];
 
-  const [selectedPreset, setSelectedPreset] = useState<StylePreset>(initialPreset);
+  const [selectedPreset, setSelectedPreset] =
+    useState<StylePreset>(initialPreset);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [customStylePrompt, setCustomStylePrompt] = useState<string>(
-    project.customStylePrompt || ""
+    project.customStylePrompt || "",
   );
   const [updatePrompts, setUpdatePrompts] = useState<boolean>(true);
   const [updateLighting, setUpdateLighting] = useState<boolean>(true);
@@ -51,7 +52,13 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
 
   if (!isOpen) return null;
 
-  const categories = ["All", "Thriller & Noir", "Horror & Suspense", "Sci-Fi & Cyberpunk", "Stylized Cinema"];
+  const categories = [
+    "All",
+    "Thriller & Noir",
+    "Horror & Suspense",
+    "Sci-Fi & Cyberpunk",
+    "Stylized Cinema",
+  ];
 
   const filteredPresets =
     selectedCategory === "All"
@@ -70,7 +77,7 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
         previewScene.imagePrompt,
         previewScene.visualAction,
         selectedPreset,
-        customStylePrompt
+        customStylePrompt,
       )
     : "";
 
@@ -98,7 +105,9 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
         if (res.ok) {
           const data = await res.json();
           if (data.updatedScenes && Array.isArray(data.updatedScenes)) {
-            const promptMap = new Map(data.updatedScenes.map((s: any) => [s.id, s.imagePrompt]));
+            const promptMap = new Map(
+              data.updatedScenes.map((s: any) => [s.id, s.imagePrompt]),
+            );
             const updatedScenes = project.scenes.map((s) => {
               const newPrompt = promptMap.get(s.id) || s.imagePrompt;
               return {
@@ -108,7 +117,10 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
                   ? { ...selectedPreset.defaultLighting }
                   : s.lightingAdjustments,
                 compositionAdjustments: updateComposition
-                  ? { ...s.compositionAdjustments, ...selectedPreset.defaultComposition }
+                  ? {
+                      ...s.compositionAdjustments,
+                      ...selectedPreset.defaultComposition,
+                    }
                   : s.compositionAdjustments,
               };
             });
@@ -123,7 +135,7 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
             });
 
             setFeedbackMessage(
-              `Successfully harmonized all ${updatedScenes.length} scenes with ${selectedPreset.name}!`
+              `Successfully harmonized all ${updatedScenes.length} scenes with ${selectedPreset.name}!`,
             );
 
             setTimeout(() => {
@@ -138,16 +150,20 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
       }
 
       // Fast deterministic client apply
-      const updatedProject = applyGlobalStyleToProject(project, selectedPreset, {
-        updatePrompts,
-        updateLighting,
-        updateComposition,
-        customStylePrompt,
-      });
+      const updatedProject = applyGlobalStyleToProject(
+        project,
+        selectedPreset,
+        {
+          updatePrompts,
+          updateLighting,
+          updateComposition,
+          customStylePrompt,
+        },
+      );
 
       onUpdateProject(updatedProject);
       setFeedbackMessage(
-        `Applied "${selectedPreset.name}" to all ${updatedProject.scenes.length} scene beats!`
+        `Applied "${selectedPreset.name}" to all ${updatedProject.scenes.length} scene beats!`,
       );
 
       setTimeout(() => {
@@ -183,7 +199,8 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
                 </span>
               </div>
               <p className="text-xs text-neutral-400">
-                Apply a cohesive visual aesthetic and lighting palette across all {project.scenes.length} Snapchat movie beats.
+                Apply a cohesive visual aesthetic and lighting palette across
+                all {project.scenes.length} Snapchat movie beats.
               </p>
             </div>
           </div>
@@ -242,6 +259,7 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
                   {/* Visual Top Preview */}
                   <div className="relative h-32 w-full overflow-hidden bg-neutral-950">
                     <img
+                      loading="lazy"
                       src={preset.sampleImageUrl}
                       alt={preset.name}
                       referrerPolicy="no-referrer"
@@ -312,7 +330,9 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
 
               {/* Color Palette Display */}
               <div className="flex items-center gap-2 bg-neutral-900 px-3 py-1.5 rounded-xl border border-neutral-800">
-                <span className="text-[10px] text-neutral-400 font-semibold uppercase">Palette:</span>
+                <span className="text-[10px] text-neutral-400 font-semibold uppercase">
+                  Palette:
+                </span>
                 <div className="flex items-center gap-1.5">
                   {selectedPreset.palette.map((c, i) => (
                     <div key={i} className="flex items-center gap-1">
@@ -329,7 +349,8 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
             {/* Custom Style Notes */}
             <div>
               <label className="block text-xs font-bold text-neutral-300 mb-1">
-                Custom Director Style Notes (Optional modifier appended to all prompts):
+                Custom Director Style Notes (Optional modifier appended to all
+                prompts):
               </label>
               <input
                 type="text"
@@ -352,7 +373,9 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
                     <span className="text-neutral-400">Previewing:</span>
                     <select
                       value={previewSceneIndex}
-                      onChange={(e) => setPreviewSceneIndex(Number(e.target.value))}
+                      onChange={(e) =>
+                        setPreviewSceneIndex(Number(e.target.value))
+                      }
                       className="bg-neutral-900 border border-neutral-700 text-neutral-200 text-[11px] rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-amber-500"
                     >
                       {project.scenes.map((s, idx) => (
@@ -434,7 +457,8 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
               </span>
             ) : (
               <span>
-                Applying will update <strong>{project.scenes.length}</strong> 10-second scene beats to <strong>{selectedPreset.name}</strong>.
+                Applying will update <strong>{project.scenes.length}</strong>{" "}
+                10-second scene beats to <strong>{selectedPreset.name}</strong>.
               </span>
             )}
           </div>
