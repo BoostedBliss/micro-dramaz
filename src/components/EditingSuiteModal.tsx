@@ -202,7 +202,7 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
               <span>Reset</span>
             </button>
             <button
-              onClick={onClose}
+              aria-label="Close" onClick={onClose}
               className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
             >
               <X className="w-5 h-5" />
