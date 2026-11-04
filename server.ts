@@ -18,6 +18,16 @@ const PORT = 3000;
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
+// 🛡️ Security Headers Middleware (CSP and COEP omitted intentionally for Vite dev compatibility & data URIs)
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff"); // Prevent MIME-type sniffing
+  res.setHeader("X-Frame-Options", "DENY"); // Prevent clickjacking
+  res.setHeader("X-XSS-Protection", "1; mode=block"); // Enable XSS filtering
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains"); // Force HTTPS
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin"); // Control referrer information
+  next();
+});
+
 function getGenAI() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
