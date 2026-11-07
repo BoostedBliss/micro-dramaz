@@ -5,6 +5,7 @@ import crypto from "crypto";
 import dotenv from "dotenv";
 import { GoogleGenAI, Type } from "@google/genai";
 import { createServer as createViteServer } from "vite";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -13,6 +14,17 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.disable("x-powered-by");
+
+// Apply Helmet security headers
+// contentSecurityPolicy and crossOriginEmbedderPolicy are disabled to maintain compatibility
+// with the Vite development server's inline scripts and the application's heavy use of data URI images.
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
+
 const PORT = 3000;
 
 app.use(express.json({ limit: "2mb" }));
