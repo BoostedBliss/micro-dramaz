@@ -241,7 +241,7 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
                 >
                   {/* Visual Top Preview */}
                   <div className="relative h-32 w-full overflow-hidden bg-neutral-950">
-                    <img
+                    <img loading="lazy"
                       src={preset.sampleImageUrl}
                       alt={preset.name}
                       referrerPolicy="no-referrer"

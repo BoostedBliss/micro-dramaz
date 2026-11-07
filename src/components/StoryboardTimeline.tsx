@@ -571,7 +571,7 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
                   <div className="relative w-full max-w-[210px] aspect-[9/16] rounded-xl overflow-hidden border-2 border-neutral-800 shadow-xl bg-neutral-950 group">
                     {scene.generatedImageUrl ? (
                       <>
-                        <img
+                        <img loading="lazy"
                           src={scene.generatedImageUrl}
                           alt={scene.title}
                           referrerPolicy="no-referrer"
@@ -625,7 +625,7 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
 
                           return (
                             <>
-                              <img
+                              <img loading="lazy"
                                 src={placeholderUrl}
                                 alt={`Draft storyboard for ${scene.title}`}
                                 referrerPolicy="no-referrer"
@@ -769,7 +769,7 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
                             className="relative group rounded-lg overflow-hidden border border-neutral-800 hover:border-amber-500 transition-all text-left"
                           >
                             <div className="aspect-[9/16] w-full bg-neutral-900">
-                              <img
+                              <img loading="lazy"
                                 src={style.imageUrl}
                                 alt={style.name}
                                 referrerPolicy="no-referrer"

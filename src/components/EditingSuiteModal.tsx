@@ -222,7 +222,7 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                     transform: `scale(${composition.scale}) translate(${composition.panX}%, ${composition.panY}%)`,
                   }}
                 >
-                  <img
+                  <img loading="lazy"
                     src={currentImage}
                     alt={scene.title}
                     referrerPolicy="no-referrer"
