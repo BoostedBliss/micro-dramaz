@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import crypto from "crypto";
 import dotenv from "dotenv";
+import helmet from "helmet";
 import { GoogleGenAI, Type } from "@google/genai";
 import { createServer as createViteServer } from "vite";
 
@@ -13,6 +14,15 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.disable("x-powered-by");
+
+// Add security headers using helmet
+// Note: We disable CSP and COEP as they break the Vite dev server's inline scripts
+// and the app's heavy use of base64 data URIs for generated images.
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
+
 const PORT = 3000;
 
 app.use(express.json({ limit: "2mb" }));
