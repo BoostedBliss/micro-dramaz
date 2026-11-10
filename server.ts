@@ -15,6 +15,16 @@ const app = express();
 app.disable("x-powered-by");
 const PORT = 3000;
 
+// Security headers middleware
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  // CSP and COEP omitted to allow Vite inline scripts and heavy data URI images
+  next();
+});
+
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
@@ -705,8 +715,14 @@ Active Characters: ${JSON.stringify(projectContext.characters || [])}`;
 app.post("/api/cloud-sync/save", (req, res) => {
   try {
     const { projectId = "snap-project-default", projectData, user = "Director" } = req.body;
+
+    // Security: Input validation to prevent type confusion / injection
+    if (typeof projectId !== "string" || typeof user !== "string") {
+      return res.status(400).json({ error: "Invalid input types for projectId or user." });
+    }
+
     projectStore.set(projectId, {
-      ...projectData,
+      ...(typeof projectData === "object" && projectData !== null ? projectData : {}),
       lastSyncedAt: new Date().toISOString(),
       updatedBy: user,
     });
