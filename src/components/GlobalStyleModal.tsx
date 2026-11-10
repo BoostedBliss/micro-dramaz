@@ -191,6 +191,8 @@ export const GlobalStyleModal: React.FC<GlobalStyleModalProps> = ({
           <button
             onClick={onClose}
             className="p-2 text-neutral-400 hover:text-white rounded-xl hover:bg-neutral-800 transition-colors"
+            title="Close"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
