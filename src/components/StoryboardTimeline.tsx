@@ -878,33 +878,54 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
                     )}
                   </div>
 
-                  {/* Beat Details & 10-Second Suspense Hooks (Cols 5-12) */}
-                  <div className="lg:col-span-8 flex flex-col justify-between space-y-4">
-                    <div>
-                      {/* Header Row */}
-                      <div className="flex items-start justify-between gap-3 border-b border-neutral-800 pb-3">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 rounded bg-neutral-800 border border-neutral-700 text-[10px] font-extrabold uppercase text-amber-400 font-mono">
-                              Beat {scene.beatNumber} &bull; 10s
-                            </span>
-                            <input
-                              type="text"
-                              value={scene.title}
-                              onChange={(e) =>
-                                handleUpdateScene(scene.id, {
-                                  title: e.target.value,
-                                })
-                              }
-                              className="text-base font-bold text-neutral-100 bg-transparent hover:bg-neutral-800/60 focus:bg-neutral-950 px-1.5 py-0.5 rounded border border-transparent hover:border-neutral-700 focus:border-amber-500 focus:outline-none transition-colors"
-                            />
-                          </div>
-                          <div className="text-xs text-neutral-400 mt-1 flex items-center gap-2">
-                            <span>Camera: {scene.cameraSetup}</span>
-                            <span>&bull;</span>
-                            <span>Lighting: {scene.lighting}</span>
-                          </div>
-                        </div>
+                      {/* Reorder and Delete actions */}
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleMoveBeat(index, "up")}
+                          disabled={index === 0}
+                          className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 disabled:opacity-30"
+                          title="Move beat earlier in sequence"
+                          aria-label="Move beat earlier in sequence"
+                        >
+                          <MoveUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleMoveBeat(index, "down")}
+                          disabled={index === project.scenes.length - 1}
+                          className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 disabled:opacity-30"
+                          title="Move beat later in sequence"
+                          aria-label="Move beat later in sequence"
+                        >
+                          <MoveDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteBeat(scene.id)}
+                          className="p-1.5 rounded-lg text-neutral-400 hover:text-red-400 hover:bg-neutral-800"
+                          title="Delete beat"
+                          aria-label="Delete beat"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Visual Action Description */}
+                    <div className="mt-3">
+                      <label className="block text-[10px] uppercase font-bold text-neutral-500 tracking-wider mb-1">
+                        Visual Action (10-Second Sequence)
+                      </label>
+                      <textarea
+                        value={scene.visualAction}
+                        onChange={(e) =>
+                          handleUpdateScene(scene.id, {
+                            visualAction: e.target.value,
+                            imagePrompt: e.target.value,
+                          })
+                        }
+                        rows={2}
+                        className="w-full bg-neutral-950/80 border border-neutral-800 rounded-xl p-2.5 text-xs text-neutral-200 focus:outline-none focus:ring-1 focus:ring-amber-500 leading-relaxed font-sans"
+                      />
+                    </div>
 
                         {/* Reorder and Delete actions */}
                         <div className="flex items-center gap-1">
