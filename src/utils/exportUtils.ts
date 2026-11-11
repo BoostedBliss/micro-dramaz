@@ -2,6 +2,17 @@ import JSZip from "jszip";
 import { ProjectData } from "../types";
 import { getTransitionMeta } from "./transitionPresets";
 
+// Helper to escape HTML characters to prevent XSS
+function escapeHTML(str: string): string {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 // Generate standard EDL (Edit Decision List) format for NLE software
 export function generateEDL(project: ProjectData): string {
   let edl = `TITLE: ${project.title.toUpperCase()}\nFCM: NON-DROP FRAME\n\n`;
@@ -175,7 +186,7 @@ export function printStoryboardBinder(project: ProjectData): void {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>${project.title} - Snapchat Movie Storyboard Binder</title>
+  <title>${escapeHTML(project.title)} - Snapchat Movie Storyboard Binder</title>
   <style>
     @page { size: portrait; margin: 15mm; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #111; line-height: 1.4; margin: 0; padding: 20px; }
@@ -200,9 +211,9 @@ export function printStoryboardBinder(project: ProjectData): void {
 <body>
   <div class="header">
     <div>
-      <h1 class="title">${project.title}</h1>
-      <div class="meta">${project.genre} &bull; Target: Snapchat Movies (10s Increments, 9:16 Vertical)</div>
-      <div class="meta" style="margin-top: 4px;">Logline: ${project.logline}</div>
+      <h1 class="title">${escapeHTML(project.title)}</h1>
+      <div class="meta">${escapeHTML(project.genre)} &bull; Target: Snapchat Movies (10s Increments, 9:16 Vertical)</div>
+      <div class="meta" style="margin-top: 4px;">Logline: ${escapeHTML(project.logline)}</div>
     </div>
     <div style="text-align: right;">
       <span class="badge">Director Production Binder</span>
@@ -215,7 +226,7 @@ export function printStoryboardBinder(project: ProjectData): void {
     ${project.characters
       .map(
         (c) =>
-          `<strong>${c.name} (${c.role}):</strong> ${c.appearanceDescription} &bull; <em>Wearing: ${c.signatureWardrobe}</em>`
+          `<strong>${escapeHTML(c.name)} (${escapeHTML(c.role)}):</strong> ${escapeHTML(c.appearanceDescription)} &bull; <em>Wearing: ${escapeHTML(c.signatureWardrobe)}</em>`
       )
       .join("<br/>")}
   </div>
@@ -232,32 +243,32 @@ export function printStoryboardBinder(project: ProjectData): void {
         }
       </div>
       <div class="info-col">
-        <div class="timecode">Beat ${scene.beatNumber}: ${scene.timecode} (${scene.duration})</div>
-        <h2 class="beat-title">${scene.title}</h2>
+        <div class="timecode">Beat ${scene.beatNumber}: ${escapeHTML(scene.timecode)} (${escapeHTML(scene.duration)})</div>
+        <h2 class="beat-title">${escapeHTML(scene.title)}</h2>
         
         <div class="field">
           <span class="field-label">Visual Action:</span>
-          <div>${scene.visualAction}</div>
+          <div>${escapeHTML(scene.visualAction)}</div>
         </div>
 
         <div class="field">
           <span class="field-label">Dialogue:</span>
-          <div>${scene.dialogue || "<em>None</em>"}</div>
+          <div>${scene.dialogue ? escapeHTML(scene.dialogue) : "<em>None</em>"}</div>
         </div>
 
         <div class="field">
           <span class="field-label">Camera & Lighting:</span>
-          <div>Framing: <strong>${scene.cameraSetup}</strong> &bull; Lighting: <strong>${scene.lighting}</strong></div>
+          <div>Framing: <strong>${escapeHTML(scene.cameraSetup)}</strong> &bull; Lighting: <strong>${escapeHTML(scene.lighting)}</strong></div>
         </div>
 
         <div class="field">
           <span class="field-label">Sound & SFX:</span>
-          <div>${scene.soundEffects || "<em>Standard ambient</em>"}</div>
+          <div>${scene.soundEffects ? escapeHTML(scene.soundEffects) : "<em>Standard ambient</em>"}</div>
         </div>
 
         <div class="cliffhanger">
           <strong>10-Sec Cliffhanger Hook (Suspense Score: ${scene.suspenseScore}/10):</strong><br/>
-          ${scene.cliffhangerHook}
+          ${escapeHTML(scene.cliffhangerHook)}
         </div>
 
         ${
@@ -265,9 +276,9 @@ export function printStoryboardBinder(project: ProjectData): void {
             ? `
           <div style="margin-top: 10px; padding: 6px 10px; background: #e0f2fe; border-left: 4px solid #0284c7; border-radius: 0 4px 4px 0; font-size: 12px; color: #0369a1;">
             <strong>&Delta; 10s Break Visual Effect:</strong> ${
-              getTransitionMeta((scene.transitionToNext || project.defaultTransition)?.type).name
+              escapeHTML(getTransitionMeta((scene.transitionToNext || project.defaultTransition)?.type).name)
             } (${(scene.transitionToNext || project.defaultTransition)?.durationSeconds || 0.6}s) &bull; <em>SFX: ${
-                (scene.transitionToNext || project.defaultTransition)?.soundEffect || "Standard drop"
+                escapeHTML((scene.transitionToNext || project.defaultTransition)?.soundEffect || "Standard drop")
               }</em>
           </div>
         `
