@@ -230,8 +230,7 @@ export const SnapchatPlayerModal: React.FC<SnapchatPlayerModalProps> = ({
           {/* Main Visual Image */}
           {scene?.generatedImageUrl || scene?.placeholderThumbnailUrl ? (
             <div className="relative w-full h-full">
-              <img
-                loading="lazy"
+              <img loading="lazy"
                 src={scene.generatedImageUrl || scene.placeholderThumbnailUrl}
                 alt={scene.title}
                 referrerPolicy="no-referrer"

@@ -594,51 +594,74 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
 
           return (
             <React.Fragment key={scene.id}>
-              <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 sm:p-5 shadow-lg transition-all hover:border-neutral-700/80">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                  {/* 9:16 Vertical Storyboard Preview Canvas (Cols 1-4) */}
-                  <div className="lg:col-span-4 flex flex-col items-center">
-                    <div className="relative w-full max-w-[210px] aspect-[9/16] rounded-xl overflow-hidden border-2 border-neutral-800 shadow-xl bg-neutral-950 group">
-                      {scene.generatedImageUrl ? (
-                        <>
-                          <img
-                            loading="lazy"
-                            src={scene.generatedImageUrl}
-                            alt={scene.title}
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 select-none"
-                            style={{ filter: cssFilter }}
+              <div
+                className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 sm:p-5 shadow-lg transition-all hover:border-neutral-700/80"
+              >
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                {/* 9:16 Vertical Storyboard Preview Canvas (Cols 1-4) */}
+                <div className="lg:col-span-4 flex flex-col items-center">
+                  <div className="relative w-full max-w-[210px] aspect-[9/16] rounded-xl overflow-hidden border-2 border-neutral-800 shadow-xl bg-neutral-950 group">
+                    {scene.generatedImageUrl ? (
+                      <>
+                        <img loading="lazy"
+                          src={scene.generatedImageUrl}
+                          alt={scene.title}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 select-none"
+                          style={{ filter: cssFilter }}
+                        />
+
+                        {/* Tint & Vignette Overlays */}
+                        {lighting?.vignette > 0 && (
+                          <div
+                            className="absolute inset-0 pointer-events-none"
+                            style={{
+                              background: `radial-gradient(circle, transparent 40%, rgba(0,0,0,${
+                                (lighting.vignette / 100) * 0.95
+                              }) 100%)`,
+                            }}
                           />
 
-                          {/* Tint & Vignette Overlays */}
-                          {lighting?.vignette > 0 && (
-                            <div
-                              className="absolute inset-0 pointer-events-none"
-                              style={{
-                                background: `radial-gradient(circle, transparent 40%, rgba(0,0,0,${
-                                  (lighting.vignette / 100) * 0.95
-                                }) 100%)`,
-                              }}
-                            />
-                          )}
+                        {/* Hover Overlay Button to Open Editing Suite */}
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-3 text-center">
+                          <button
+                            id={`btn-edit-suite-${scene.id}`}
+                            onClick={() => onOpenEditingSuite(scene)}
+                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-neutral-950 flex items-center gap-1.5 shadow-md"
+                          >
+                            <Sliders className="w-3.5 h-3.5" />
+                            <span>Adjust Composition & Light</span>
+                          </button>
+                          <button
+                            onClick={() => handleGenerateSingleBeat(scene)}
+                            disabled={isGeneratingThis}
+                            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-neutral-800 hover:bg-neutral-700 text-neutral-200 flex items-center gap-1.5 border border-neutral-700"
+                          >
+                            <RefreshCw className={`w-3.5 h-3.5 ${isGeneratingThis ? "animate-spin" : ""}`} />
+                            <span>Regenerate (gemini-3-pro)</span>
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      /* Visual Storyboard Placeholder Thumbnail */
+                      <div className="relative w-full h-full bg-neutral-950 overflow-hidden">
+                        {(() => {
+                          const placeholderUrl =
+                            scene.placeholderThumbnailUrl ||
+                            getThematicPlaceholderThumbnail(
+                              project.genre || project.visualTone,
+                              scene.beatNumber,
+                              scene.visualAction
+                            );
 
-                          {/* Hover Overlay Button to Open Editing Suite */}
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-3 text-center">
-                            <button
-                              id={`btn-edit-suite-${scene.id}`}
-                              onClick={() => onOpenEditingSuite(scene)}
-                              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-neutral-950 flex items-center gap-1.5 shadow-md"
-                            >
-                              <Sliders className="w-3.5 h-3.5" />
-                              <span>Adjust Composition & Light</span>
-                            </button>
-                            <button
-                              onClick={() => handleGenerateSingleBeat(scene)}
-                              disabled={isGeneratingThis}
-                              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-neutral-800 hover:bg-neutral-700 text-neutral-200 flex items-center gap-1.5 border border-neutral-700"
-                            >
-                              <RefreshCw
-                                className={`w-3.5 h-3.5 ${isGeneratingThis ? "animate-spin" : ""}`}
+                          return (
+                            <>
+                              <img loading="lazy"
+                                src={placeholderUrl}
+                                alt={`Draft storyboard for ${scene.title}`}
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover select-none transition-transform duration-300 group-hover:scale-105 opacity-85"
+                                style={{ filter: cssFilter }}
                               />
                               <span>Regenerate (gemini-3-pro)</span>
                             </button>
@@ -780,7 +803,47 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
                         <span>Editing Suite</span>
                       </button>
 
-                      {!scene.generatedImageUrl && (
+                  {/* Interactive Concept Style Picker Popover */}
+                  {activePickerSceneId === scene.id && (
+                    <div className="mt-3 w-full max-w-[260px] p-3 rounded-xl bg-neutral-950 border border-neutral-800 shadow-2xl z-20 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1">
+                          <Palette className="w-3 h-3" />
+                          Storyboard Concept
+                        </span>
+                        <button
+                          onClick={() => setActivePickerSceneId(null)}
+                          className="text-xs text-neutral-400 hover:text-white px-1 font-mono"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                      <p className="text-[10px] text-neutral-400">
+                        Pick a 9:16 vertical concept draft thumbnail for Beat {scene.beatNumber}:
+                      </p>
+                      <div className="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto pr-1">
+                        {STORYBOARD_PLACEHOLDER_STYLES.map((style) => (
+                          <button
+                            key={style.id}
+                            type="button"
+                            onClick={() => handleSelectPlaceholder(scene.id, style.imageUrl)}
+                            className="relative group rounded-lg overflow-hidden border border-neutral-800 hover:border-amber-500 transition-all text-left"
+                          >
+                            <div className="aspect-[9/16] w-full bg-neutral-900">
+                              <img loading="lazy"
+                                src={style.imageUrl}
+                                alt={style.name}
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                              />
+                            </div>
+                            <div className="absolute inset-x-0 bottom-0 bg-neutral-950/90 p-1 text-[9px] font-bold text-neutral-200 truncate">
+                              {style.name}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                      <div className="pt-1.5 flex items-center justify-between border-t border-neutral-800">
                         <button
                           onClick={() =>
                             setActivePickerSceneId(
