@@ -62,13 +62,16 @@ export default function App() {
         lastSavedAt: Date.now(),
       };
 
-      // Debounce local storage save to prevent main-thread blocking on large state
+      // ⚡ Bolt Performance Optimization:
+      // Debounce local storage saves. Writing large application states (with base64 images)
+      // synchronously on every keystroke blocks the main thread because JSON.stringify
+      // is expensive. Debouncing by 1000ms ensures the UI remains responsive during rapid updates.
       if (localSaveTimerRef.current) {
         clearTimeout(localSaveTimerRef.current);
       }
       localSaveTimerRef.current = setTimeout(() => {
         saveProjectLocally(nextProject);
-      }, 500);
+      }, 1000);
 
       // Debounce background cloud sync
       if (autoSaveTimerRef.current) {
