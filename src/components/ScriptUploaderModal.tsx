@@ -165,7 +165,7 @@ export const ScriptUploaderModal: React.FC<ScriptUploaderModalProps> = ({
             </div>
           </div>
           <button
-            onClick={onClose}
+            aria-label="Close" onClick={onClose}
             className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
             aria-label="Close Script Uploader"
           >
