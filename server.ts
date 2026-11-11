@@ -7,6 +7,7 @@ import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import { GoogleGenAI, Type } from "@google/genai";
 import { createServer as createViteServer } from "vite";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -15,6 +16,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.disable("x-powered-by");
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false
+}));
 const PORT = 3000;
 
 // Security Middlewares
