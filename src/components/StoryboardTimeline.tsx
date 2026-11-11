@@ -814,7 +814,7 @@ export const StoryboardTimeline: React.FC<StoryboardTimelineProps> = ({
                         <button
                           onClick={() => setActivePickerSceneId(null)}
                           className="text-xs text-neutral-400 hover:text-white px-1 font-mono"
-                          aria-label="Close concept picker"
+                          aria-label="Close picker"
                         >
                           &times;
                         </button>
