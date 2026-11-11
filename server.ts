@@ -3,8 +3,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import crypto from "crypto";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
 import { GoogleGenAI, Type } from "@google/genai";
 import { createServer as createViteServer } from "vite";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -13,10 +16,47 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.disable("x-powered-by");
+
+// Apply Helmet security headers
+// contentSecurityPolicy and crossOriginEmbedderPolicy are disabled to maintain compatibility
+// with the Vite development server's inline scripts and the application's heavy use of data URI images.
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
+
 const PORT = 3000;
+
+// Security Middlewares
+app.use(helmet({
+  contentSecurityPolicy: false, // Vite dev server needs custom CSP or CSP disabled for inline scripts
+  crossOriginEmbedderPolicy: false // Allows loading images from data URIs which this app uses heavily
+}));
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { error: "Too many requests from this IP, please try again after 15 minutes." }
+});
+
+app.use("/api/", apiLimiter);
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
+
+// 🛡️ Security Headers Middleware (CSP and COEP omitted intentionally for Vite dev compatibility & data URIs)
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff"); // Prevent MIME-type sniffing
+  res.setHeader("X-Frame-Options", "DENY"); // Prevent clickjacking
+  res.setHeader("X-XSS-Protection", "1; mode=block"); // Enable XSS filtering
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains"); // Force HTTPS
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin"); // Control referrer information
+  next();
+});
 
 function getGenAI() {
   const apiKey = process.env.GEMINI_API_KEY;

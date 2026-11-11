@@ -49,7 +49,7 @@ export default function App() {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isTransitionModalOpen, setIsTransitionModalOpen] = useState(false);
 
-  // Auto-save debounce timer
+  // Auto-save debounce timers
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const localSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
