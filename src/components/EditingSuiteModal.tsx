@@ -36,7 +36,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
 }) => {
   if (!isOpen || !scene) return null;
 
-  const [activeTab, setActiveTab] = useState<"lighting" | "composition" | "ai_retouch">("lighting");
+  const [activeTab, setActiveTab] = useState<
+    "lighting" | "composition" | "ai_retouch"
+  >("lighting");
   const [lighting, setLighting] = useState<LightingSettings>({
     ...scene.lightingAdjustments,
   });
@@ -44,7 +46,7 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
     ...scene.compositionAdjustments,
   });
   const [currentImage, setCurrentImage] = useState<string>(
-    scene.generatedImageUrl || scene.placeholderThumbnailUrl || ""
+    scene.generatedImageUrl || scene.placeholderThumbnailUrl || "",
   );
   const [aiPrompt, setAiPrompt] = useState("");
   const [isAiProcessing, setIsAiProcessing] = useState(false);
@@ -54,22 +56,58 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
   const applyFramingPreset = (preset: CompositionSettings["framingPreset"]) => {
     switch (preset) {
       case "extreme_close_up":
-        setComposition((prev) => ({ ...prev, framingPreset: preset, scale: 1.4, panX: 0, panY: -10 }));
+        setComposition((prev) => ({
+          ...prev,
+          framingPreset: preset,
+          scale: 1.4,
+          panX: 0,
+          panY: -10,
+        }));
         break;
       case "close_up":
-        setComposition((prev) => ({ ...prev, framingPreset: preset, scale: 1.2, panX: 0, panY: -5 }));
+        setComposition((prev) => ({
+          ...prev,
+          framingPreset: preset,
+          scale: 1.2,
+          panX: 0,
+          panY: -5,
+        }));
         break;
       case "medium_shot":
-        setComposition((prev) => ({ ...prev, framingPreset: preset, scale: 1.0, panX: 0, panY: 0 }));
+        setComposition((prev) => ({
+          ...prev,
+          framingPreset: preset,
+          scale: 1.0,
+          panX: 0,
+          panY: 0,
+        }));
         break;
       case "low_angle":
-        setComposition((prev) => ({ ...prev, framingPreset: preset, scale: 1.15, panX: 0, panY: 15 }));
+        setComposition((prev) => ({
+          ...prev,
+          framingPreset: preset,
+          scale: 1.15,
+          panX: 0,
+          panY: 15,
+        }));
         break;
       case "high_angle":
-        setComposition((prev) => ({ ...prev, framingPreset: preset, scale: 1.15, panX: 0, panY: -15 }));
+        setComposition((prev) => ({
+          ...prev,
+          framingPreset: preset,
+          scale: 1.15,
+          panX: 0,
+          panY: -15,
+        }));
         break;
       case "dutch_tilt":
-        setComposition((prev) => ({ ...prev, framingPreset: preset, scale: 1.1, panX: 0, panY: 0 }));
+        setComposition((prev) => ({
+          ...prev,
+          framingPreset: preset,
+          scale: 1.1,
+          panX: 0,
+          panY: 0,
+        }));
         break;
       default:
         break;
@@ -188,7 +226,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                   Beat {scene.beatNumber} &bull; {scene.timecode}
                 </span>
               </div>
-              <p className="text-xs text-neutral-400 truncate max-w-md">{scene.title}</p>
+              <p className="text-xs text-neutral-400 truncate max-w-md">
+                {scene.title}
+              </p>
             </div>
           </div>
 
@@ -202,7 +242,7 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
               <span>Reset</span>
             </button>
             <button
-              onClick={onClose}
+              aria-label="Close" onClick={onClose}
               className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
               aria-label="Close editing suite"
             >
@@ -224,6 +264,7 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                   }}
                 >
                   <img
+                    loading="lazy"
                     src={currentImage}
                     alt={scene.title}
                     referrerPolicy="no-referrer"
@@ -232,14 +273,15 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                   />
 
                   {/* Color Tint Overlay */}
-                  {lighting.tintColor !== "none" && lighting.tintOpacity > 0 && (
-                    <div
-                      className="absolute inset-0 pointer-events-none mix-blend-color"
-                      style={{
-                        backgroundColor: `${tintColors[lighting.tintColor]}${lighting.tintOpacity / 100})`,
-                      }}
-                    />
-                  )}
+                  {lighting.tintColor !== "none" &&
+                    lighting.tintOpacity > 0 && (
+                      <div
+                        className="absolute inset-0 pointer-events-none mix-blend-color"
+                        style={{
+                          backgroundColor: `${tintColors[lighting.tintColor]}${lighting.tintOpacity / 100})`,
+                        }}
+                      />
+                    )}
 
                   {/* Vignette Suspense Mask */}
                   {lighting.vignette > 0 && (
@@ -267,7 +309,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-neutral-500">
                   <Camera className="w-10 h-10 mb-2 opacity-40 text-neutral-400" />
-                  <p className="text-xs font-semibold">Frame not yet generated</p>
+                  <p className="text-xs font-semibold">
+                    Frame not yet generated
+                  </p>
                   <p className="text-[11px] text-neutral-600 mt-1">
                     Generate the frame or use AI Re-touch to apply adjustments
                   </p>
@@ -308,7 +352,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                       </div>
                       <span className="font-bold">SnapStory Movie</span>
                     </div>
-                    <span className="px-1.5 py-0.5 rounded bg-black/40 font-mono text-[9px]">10s</span>
+                    <span className="px-1.5 py-0.5 rounded bg-black/40 font-mono text-[9px]">
+                      10s
+                    </span>
                   </div>
                   <div className="space-y-1">
                     <div className="bg-black/60 backdrop-blur-sm rounded-lg p-2 text-[10px] leading-tight border border-white/10">
@@ -340,11 +386,15 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
             </div>
 
             <div className="mt-3 flex items-center gap-2 text-[11px] text-neutral-400">
-              <span className="font-semibold text-neutral-300">Format:</span> 9:16 Vertical Cinema
+              <span className="font-semibold text-neutral-300">Format:</span>{" "}
+              9:16 Vertical Cinema
               <span>&bull;</span>
-              <span className="font-semibold text-neutral-300">Res:</span> {scene.imageSize || "2K"}
+              <span className="font-semibold text-neutral-300">Res:</span>{" "}
+              {scene.imageSize || "2K"}
               <span>&bull;</span>
-              <span className="text-amber-400">Suspense: {scene.suspenseScore}/10</span>
+              <span className="text-amber-400">
+                Suspense: {scene.suspenseScore}/10
+              </span>
             </div>
           </div>
 
@@ -397,7 +447,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                     <div>
                       <div className="flex justify-between font-medium text-neutral-300 mb-1">
                         <span>Brightness</span>
-                        <span className="font-mono text-neutral-400">{lighting.brightness}%</span>
+                        <span className="font-mono text-neutral-400">
+                          {lighting.brightness}%
+                        </span>
                       </div>
                       <input
                         type="range"
@@ -405,7 +457,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                         max="50"
                         value={lighting.brightness}
                         onChange={(e) =>
-                          setLighting({ ...lighting, brightness: Number(e.target.value) })
+                          setLighting({
+                            ...lighting,
+                            brightness: Number(e.target.value),
+                          })
                         }
                         className="w-full accent-amber-500 cursor-pointer"
                       />
@@ -413,7 +468,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                     <div>
                       <div className="flex justify-between font-medium text-neutral-300 mb-1">
                         <span>Contrast</span>
-                        <span className="font-mono text-neutral-400">{lighting.contrast}%</span>
+                        <span className="font-mono text-neutral-400">
+                          {lighting.contrast}%
+                        </span>
                       </div>
                       <input
                         type="range"
@@ -421,7 +478,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                         max="50"
                         value={lighting.contrast}
                         onChange={(e) =>
-                          setLighting({ ...lighting, contrast: Number(e.target.value) })
+                          setLighting({
+                            ...lighting,
+                            contrast: Number(e.target.value),
+                          })
                         }
                         className="w-full accent-amber-500 cursor-pointer"
                       />
@@ -431,8 +491,12 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                   {/* Suspense Vignette */}
                   <div>
                     <div className="flex justify-between font-medium text-neutral-300 mb-1">
-                      <span>Suspense Edge Vignette (Crucial for Vertical Focus)</span>
-                      <span className="font-mono text-neutral-400">{lighting.vignette}%</span>
+                      <span>
+                        Suspense Edge Vignette (Crucial for Vertical Focus)
+                      </span>
+                      <span className="font-mono text-neutral-400">
+                        {lighting.vignette}%
+                      </span>
                     </div>
                     <input
                       type="range"
@@ -440,7 +504,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                       max="100"
                       value={lighting.vignette}
                       onChange={(e) =>
-                        setLighting({ ...lighting, vignette: Number(e.target.value) })
+                        setLighting({
+                          ...lighting,
+                          vignette: Number(e.target.value),
+                        })
                       }
                       className="w-full accent-amber-500 cursor-pointer"
                     />
@@ -449,13 +516,15 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                   {/* Color Temperature */}
                   <div>
                     <div className="flex justify-between font-medium text-neutral-300 mb-1">
-                      <span>Color Temperature (Cool Thriller vs Warm Dread)</span>
+                      <span>
+                        Color Temperature (Cool Thriller vs Warm Dread)
+                      </span>
                       <span className="font-mono text-neutral-400">
                         {lighting.colorTemp < 0
                           ? `Cool (${lighting.colorTemp})`
                           : lighting.colorTemp > 0
-                          ? `Warm (+${lighting.colorTemp})`
-                          : "Neutral"}
+                            ? `Warm (+${lighting.colorTemp})`
+                            : "Neutral"}
                       </span>
                     </div>
                     <input
@@ -464,7 +533,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                       max="50"
                       value={lighting.colorTemp}
                       onChange={(e) =>
-                        setLighting({ ...lighting, colorTemp: Number(e.target.value) })
+                        setLighting({
+                          ...lighting,
+                          colorTemp: Number(e.target.value),
+                        })
                       }
                       className="w-full accent-amber-500 cursor-pointer"
                     />
@@ -476,7 +548,16 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                       Suspense Rim Light Tint Filter
                     </label>
                     <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3">
-                      {(["none", "cyan", "crimson", "amber", "emerald", "purple"] as const).map((col) => {
+                      {(
+                        [
+                          "none",
+                          "cyan",
+                          "crimson",
+                          "amber",
+                          "emerald",
+                          "purple",
+                        ] as const
+                      ).map((col) => {
                         const isSelected = lighting.tintColor === col;
                         return (
                           <button
@@ -486,7 +567,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                               setLighting({
                                 ...lighting,
                                 tintColor: col,
-                                tintOpacity: col === "none" ? 0 : lighting.tintOpacity || 25,
+                                tintOpacity:
+                                  col === "none"
+                                    ? 0
+                                    : lighting.tintOpacity || 25,
                               })
                             }
                             className={`p-2 rounded-lg border text-center font-semibold capitalize transition-all ${
@@ -505,7 +589,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                       <div>
                         <div className="flex justify-between font-medium text-neutral-300 mb-1">
                           <span>Tint Intensity</span>
-                          <span className="font-mono text-neutral-400">{lighting.tintOpacity}%</span>
+                          <span className="font-mono text-neutral-400">
+                            {lighting.tintOpacity}%
+                          </span>
                         </div>
                         <input
                           type="range"
@@ -513,7 +599,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                           max="80"
                           value={lighting.tintOpacity}
                           onChange={(e) =>
-                            setLighting({ ...lighting, tintOpacity: Number(e.target.value) })
+                            setLighting({
+                              ...lighting,
+                              tintOpacity: Number(e.target.value),
+                            })
                           }
                           className="w-full accent-amber-500 cursor-pointer"
                         />
@@ -525,7 +614,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                   <div>
                     <div className="flex justify-between font-medium text-neutral-300 mb-1">
                       <span>Cinematic Film Grain</span>
-                      <span className="font-mono text-neutral-400">{lighting.grain}%</span>
+                      <span className="font-mono text-neutral-400">
+                        {lighting.grain}%
+                      </span>
                     </div>
                     <input
                       type="range"
@@ -533,7 +624,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                       max="60"
                       value={lighting.grain}
                       onChange={(e) =>
-                        setLighting({ ...lighting, grain: Number(e.target.value) })
+                        setLighting({
+                          ...lighting,
+                          grain: Number(e.target.value),
+                        })
                       }
                       className="w-full accent-amber-500 cursor-pointer"
                     />
@@ -551,12 +645,36 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                       {[
-                        { id: "extreme_close_up", label: "Extreme Close-Up", desc: "Eyes / Terror hook" },
-                        { id: "close_up", label: "Close-Up", desc: "Character emotion" },
-                        { id: "medium_shot", label: "Medium Shot", desc: "Waist-up vertical" },
-                        { id: "low_angle", label: "Low Angle", desc: "Menace / Scale" },
-                        { id: "high_angle", label: "High Angle", desc: "Vulnerable POV" },
-                        { id: "dutch_tilt", label: "Dutch Angle", desc: "Disorientation" },
+                        {
+                          id: "extreme_close_up",
+                          label: "Extreme Close-Up",
+                          desc: "Eyes / Terror hook",
+                        },
+                        {
+                          id: "close_up",
+                          label: "Close-Up",
+                          desc: "Character emotion",
+                        },
+                        {
+                          id: "medium_shot",
+                          label: "Medium Shot",
+                          desc: "Waist-up vertical",
+                        },
+                        {
+                          id: "low_angle",
+                          label: "Low Angle",
+                          desc: "Menace / Scale",
+                        },
+                        {
+                          id: "high_angle",
+                          label: "High Angle",
+                          desc: "Vulnerable POV",
+                        },
+                        {
+                          id: "dutch_tilt",
+                          label: "Dutch Angle",
+                          desc: "Disorientation",
+                        },
                       ].map((item) => (
                         <button
                           key={item.id}
@@ -568,8 +686,12 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                               : "bg-neutral-950 border-neutral-800 text-neutral-400 hover:border-neutral-700"
                           }`}
                         >
-                          <div className="font-bold text-[11px] text-amber-300">{item.label}</div>
-                          <div className="text-[10px] text-neutral-500 leading-tight">{item.desc}</div>
+                          <div className="font-bold text-[11px] text-amber-300">
+                            {item.label}
+                          </div>
+                          <div className="text-[10px] text-neutral-500 leading-tight">
+                            {item.desc}
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -577,11 +699,15 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
 
                   {/* Manual Pan & Zoom */}
                   <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-3 space-y-3">
-                    <span className="font-semibold text-neutral-300 block">Manual Pan & Scale</span>
+                    <span className="font-semibold text-neutral-300 block">
+                      Manual Pan & Scale
+                    </span>
                     <div>
                       <div className="flex justify-between font-medium text-neutral-400 mb-1">
                         <span>Zoom Scale</span>
-                        <span className="font-mono text-neutral-300">{composition.scale.toFixed(2)}x</span>
+                        <span className="font-mono text-neutral-300">
+                          {composition.scale.toFixed(2)}x
+                        </span>
                       </div>
                       <input
                         type="range"
@@ -590,7 +716,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                         step="0.05"
                         value={composition.scale}
                         onChange={(e) =>
-                          setComposition({ ...composition, scale: Number(e.target.value) })
+                          setComposition({
+                            ...composition,
+                            scale: Number(e.target.value),
+                          })
                         }
                         className="w-full accent-amber-500 cursor-pointer"
                       />
@@ -600,7 +729,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                       <div>
                         <div className="flex justify-between font-medium text-neutral-400 mb-1">
                           <span>Pan X</span>
-                          <span className="font-mono text-neutral-300">{composition.panX}%</span>
+                          <span className="font-mono text-neutral-300">
+                            {composition.panX}%
+                          </span>
                         </div>
                         <input
                           type="range"
@@ -608,7 +739,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                           max="30"
                           value={composition.panX}
                           onChange={(e) =>
-                            setComposition({ ...composition, panX: Number(e.target.value) })
+                            setComposition({
+                              ...composition,
+                              panX: Number(e.target.value),
+                            })
                           }
                           className="w-full accent-amber-500 cursor-pointer"
                         />
@@ -616,7 +750,9 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                       <div>
                         <div className="flex justify-between font-medium text-neutral-400 mb-1">
                           <span>Pan Y</span>
-                          <span className="font-mono text-neutral-300">{composition.panY}%</span>
+                          <span className="font-mono text-neutral-300">
+                            {composition.panY}%
+                          </span>
                         </div>
                         <input
                           type="range"
@@ -624,7 +760,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                           max="30"
                           value={composition.panY}
                           onChange={(e) =>
-                            setComposition({ ...composition, panY: Number(e.target.value) })
+                            setComposition({
+                              ...composition,
+                              panY: Number(e.target.value),
+                            })
                           }
                           className="w-full accent-amber-500 cursor-pointer"
                         />
@@ -647,7 +786,12 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                         <button
                           key={ov.id}
                           type="button"
-                          onClick={() => setComposition({ ...composition, cameraOverlay: ov.id as any })}
+                          onClick={() =>
+                            setComposition({
+                              ...composition,
+                              cameraOverlay: ov.id as any,
+                            })
+                          }
                           className={`py-2 px-2.5 rounded-lg border text-center font-semibold text-[11px] transition-all ${
                             composition.cameraOverlay === ov.id
                               ? "bg-amber-500/20 border-amber-500 text-amber-300"
@@ -668,16 +812,31 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                     <select
                       value={composition.cameraMovement}
                       onChange={(e) =>
-                        setComposition({ ...composition, cameraMovement: e.target.value as any })
+                        setComposition({
+                          ...composition,
+                          cameraMovement: e.target.value as any,
+                        })
                       }
                       className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-xs text-neutral-200 focus:outline-none focus:ring-1 focus:ring-amber-500"
                     >
-                      <option value="push_in">Quick Push-In (Building Tension)</option>
-                      <option value="snap_zoom">Snap Zoom (Sudden Revelation)</option>
-                      <option value="whip_pan">Whip Pan (Fast Transition)</option>
-                      <option value="tilt_down">Slow Tilt Down (Floor/Clue Discovery)</option>
-                      <option value="pull_out">Pull Out (Revealing Scope/Threat)</option>
-                      <option value="static">Locked-Off Static (Claustrophobic Wait)</option>
+                      <option value="push_in">
+                        Quick Push-In (Building Tension)
+                      </option>
+                      <option value="snap_zoom">
+                        Snap Zoom (Sudden Revelation)
+                      </option>
+                      <option value="whip_pan">
+                        Whip Pan (Fast Transition)
+                      </option>
+                      <option value="tilt_down">
+                        Slow Tilt Down (Floor/Clue Discovery)
+                      </option>
+                      <option value="pull_out">
+                        Pull Out (Revealing Scope/Threat)
+                      </option>
+                      <option value="static">
+                        Locked-Off Static (Claustrophobic Wait)
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -687,7 +846,10 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
               {activeTab === "ai_retouch" && (
                 <div className="space-y-4">
                   <div className="p-3 bg-amber-950/30 border border-amber-800/40 rounded-xl text-amber-200 text-xs">
-                    <strong>Gemini AI Re-Lighting:</strong> Prompt the model to modify lighting direction, add atmospheric elements (volumetric fog, flashlight beams, strobe flashes), or reframe the scene while keeping the character consistent.
+                    <strong>Gemini AI Re-Lighting:</strong> Prompt the model to
+                    modify lighting direction, add atmospheric elements
+                    (volumetric fog, flashlight beams, strobe flashes), or
+                    reframe the scene while keeping the character consistent.
                   </div>
 
                   {aiError && (
@@ -735,7 +897,11 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
                     className="w-full py-2.5 rounded-xl font-bold text-xs bg-amber-500 hover:bg-amber-400 text-neutral-950 transition-all flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Sparkles className="w-4 h-4" />
-                    <span>{isAiProcessing ? "Re-Lighting with Gemini..." : "Execute AI Re-Light"}</span>
+                    <span>
+                      {isAiProcessing
+                        ? "Re-Lighting with Gemini..."
+                        : "Execute AI Re-Light"}
+                    </span>
                   </button>
                 </div>
               )}
