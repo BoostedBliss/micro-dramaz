@@ -51,6 +51,7 @@ export default function App() {
 
   // Auto-save debounce timer
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const localSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Update project helper with auto-save
   const handleUpdateProject = useCallback((updated: Partial<ProjectData>) => {
@@ -61,8 +62,13 @@ export default function App() {
         lastSavedAt: Date.now(),
       };
 
-      // Auto-save to local storage immediately
-      saveProjectLocally(nextProject);
+      // Debounce local storage save to prevent UI blocking from large JSON serialization
+      if (localSaveTimerRef.current) {
+        clearTimeout(localSaveTimerRef.current);
+      }
+      localSaveTimerRef.current = setTimeout(() => {
+        saveProjectLocally(nextProject);
+      }, 500);
 
       // Debounce background cloud sync
       if (autoSaveTimerRef.current) {
