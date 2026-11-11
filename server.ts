@@ -4,7 +4,6 @@ import { fileURLToPath } from "url";
 import crypto from "crypto";
 import dotenv from "dotenv";
 import helmet from "helmet";
-import { rateLimit } from "express-rate-limit";
 import { GoogleGenAI, Type } from "@google/genai";
 import { createServer as createViteServer } from "vite";
 import helmet from "helmet";
@@ -17,33 +16,25 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.disable("x-powered-by");
 
-// Apply Helmet security headers
-// contentSecurityPolicy and crossOriginEmbedderPolicy are disabled to maintain compatibility
-// with the Vite development server's inline scripts and the application's heavy use of data URI images.
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
-  })
-);
+// Add security headers using helmet
+// Note: We disable CSP and COEP as they break the Vite dev server's inline scripts
+// and the app's heavy use of base64 data URIs for generated images.
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
 
 const PORT = 3000;
 
-// Security Middlewares
-app.use(helmet({
-  contentSecurityPolicy: false, // Vite dev server needs custom CSP or CSP disabled for inline scripts
-  crossOriginEmbedderPolicy: false // Allows loading images from data URIs which this app uses heavily
-}));
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
-  standardHeaders: 'draft-8',
-  legacyHeaders: false,
-  message: { error: "Too many requests from this IP, please try again after 15 minutes." }
+// Security headers middleware
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  // CSP and COEP omitted to allow Vite inline scripts and heavy data URI images
+  next();
 });
-
-app.use("/api/", apiLimiter);
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
@@ -745,8 +736,17 @@ Active Characters: ${JSON.stringify(projectContext.characters || [])}`;
 app.post("/api/cloud-sync/save", (req, res) => {
   try {
     const { projectId = "snap-project-default", projectData, user = "Director" } = req.body;
+
+    if (typeof projectId !== 'string' || typeof user !== 'string') {
+      return res.status(400).json({ error: "Invalid input types for projectId or user." });
+    }
+
+    if (projectData !== undefined && (typeof projectData !== 'object' || Array.isArray(projectData) || projectData === null)) {
+      return res.status(400).json({ error: "Invalid projectData type, expected an object." });
+    }
+
     projectStore.set(projectId, {
-      ...projectData,
+      ...(typeof projectData === "object" && projectData !== null ? projectData : {}),
       lastSyncedAt: new Date().toISOString(),
       updatedBy: user,
     });

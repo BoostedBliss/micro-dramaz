@@ -237,6 +237,7 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
               onClick={resetAll}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 transition-colors"
               title="Reset all lighting and composition sliders"
+              aria-label="Reset all adjustments"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset</span>
@@ -244,7 +245,8 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
             <button
               aria-label="Close" onClick={onClose}
               className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
-              aria-label="Close editing suite"
+              title="Close"
+              aria-label="Close"
             >
               <X className="w-5 h-5" />
             </button>

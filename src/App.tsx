@@ -68,7 +68,7 @@ export default function App() {
       }
       localSaveTimerRef.current = setTimeout(() => {
         saveProjectLocally(nextProject);
-      }, 500);
+      }, 1000);
 
       // Debounce background cloud sync
       if (autoSaveTimerRef.current) {
