@@ -3,8 +3,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import crypto from "crypto";
 import dotenv from "dotenv";
+import helmet from "helmet";
 import { GoogleGenAI, Type } from "@google/genai";
 import { createServer as createViteServer } from "vite";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -13,10 +15,39 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.disable("x-powered-by");
+
+// Add security headers using helmet
+// Note: We disable CSP and COEP as they break the Vite dev server's inline scripts
+// and the app's heavy use of base64 data URIs for generated images.
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
+
 const PORT = 3000;
+
+// Security headers middleware
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  // CSP and COEP omitted to allow Vite inline scripts and heavy data URI images
+  next();
+});
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
+
+// 🛡️ Security Headers Middleware (CSP and COEP omitted intentionally for Vite dev compatibility & data URIs)
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff"); // Prevent MIME-type sniffing
+  res.setHeader("X-Frame-Options", "DENY"); // Prevent clickjacking
+  res.setHeader("X-XSS-Protection", "1; mode=block"); // Enable XSS filtering
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains"); // Force HTTPS
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin"); // Control referrer information
+  next();
+});
 
 function getGenAI() {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -715,7 +746,7 @@ app.post("/api/cloud-sync/save", (req, res) => {
     }
 
     projectStore.set(projectId, {
-      ...projectData,
+      ...(typeof projectData === "object" && projectData !== null ? projectData : {}),
       lastSyncedAt: new Date().toISOString(),
       updatedBy: user,
     });

@@ -49,8 +49,9 @@ export default function App() {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isTransitionModalOpen, setIsTransitionModalOpen] = useState(false);
 
-  // Auto-save debounce timer
+  // Auto-save debounce timers
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const localSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Update project helper with auto-save
   const handleUpdateProject = useCallback((updated: Partial<ProjectData>) => {
@@ -61,8 +62,16 @@ export default function App() {
         lastSavedAt: Date.now(),
       };
 
-      // Auto-save to local storage immediately
-      saveProjectLocally(nextProject);
+      // ⚡ Bolt Performance Optimization:
+      // Debounce local storage saves. Writing large application states (with base64 images)
+      // synchronously on every keystroke blocks the main thread because JSON.stringify
+      // is expensive. Debouncing by 1000ms ensures the UI remains responsive during rapid updates.
+      if (localSaveTimerRef.current) {
+        clearTimeout(localSaveTimerRef.current);
+      }
+      localSaveTimerRef.current = setTimeout(() => {
+        saveProjectLocally(nextProject);
+      }, 1000);
 
       // Debounce background cloud sync
       if (autoSaveTimerRef.current) {
