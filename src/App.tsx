@@ -50,8 +50,8 @@ export default function App() {
   const [isTransitionModalOpen, setIsTransitionModalOpen] = useState(false);
 
   // Auto-save debounce timers
-  const localSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const localSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Update project helper with auto-save
   const handleUpdateProject = useCallback((updated: Partial<ProjectData>) => {
@@ -62,13 +62,13 @@ export default function App() {
         lastSavedAt: Date.now(),
       };
 
-      // Debounce local storage save to prevent UI blocking when handling heavy base64 strings
+      // Debounce local storage save to prevent main-thread blocking on large state
       if (localSaveTimerRef.current) {
         clearTimeout(localSaveTimerRef.current);
       }
       localSaveTimerRef.current = setTimeout(() => {
         saveProjectLocally(nextProject);
-      }, 500); // Small debounce for typing responsiveness
+      }, 500);
 
       // Debounce background cloud sync
       if (autoSaveTimerRef.current) {
