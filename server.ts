@@ -705,6 +705,15 @@ Active Characters: ${JSON.stringify(projectContext.characters || [])}`;
 app.post("/api/cloud-sync/save", (req, res) => {
   try {
     const { projectId = "snap-project-default", projectData, user = "Director" } = req.body;
+
+    if (typeof projectId !== 'string' || typeof user !== 'string') {
+      return res.status(400).json({ error: "Invalid input types for projectId or user." });
+    }
+
+    if (projectData !== undefined && (typeof projectData !== 'object' || Array.isArray(projectData) || projectData === null)) {
+      return res.status(400).json({ error: "Invalid projectData type, expected an object." });
+    }
+
     projectStore.set(projectId, {
       ...projectData,
       lastSyncedAt: new Date().toISOString(),
