@@ -16,10 +16,17 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.disable("x-powered-by");
-app.use(helmet({
-  contentSecurityPolicy: false,
-  crossOriginEmbedderPolicy: false
-}));
+
+// Apply Helmet security headers
+// contentSecurityPolicy and crossOriginEmbedderPolicy are disabled to maintain compatibility
+// with the Vite development server's inline scripts and the application's heavy use of data URI images.
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
+
 const PORT = 3000;
 
 // Security Middlewares
