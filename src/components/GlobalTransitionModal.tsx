@@ -121,8 +121,9 @@ export const GlobalTransitionModal: React.FC<GlobalTransitionModalProps> = ({
           </div>
 
           <button
-            onClick={onClose}
+            aria-label="Close" onClick={onClose}
             className="p-1.5 rounded-full bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white transition-colors"
+            aria-label="Close Global Transitions"
           >
             <X className="w-4 h-4" />
           </button>
