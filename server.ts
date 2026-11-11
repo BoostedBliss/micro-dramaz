@@ -26,21 +26,15 @@ app.use(helmet({
 
 const PORT = 3000;
 
-// Security Middlewares
-app.use(helmet({
-  contentSecurityPolicy: false, // Vite dev server needs custom CSP or CSP disabled for inline scripts
-  crossOriginEmbedderPolicy: false // Allows loading images from data URIs which this app uses heavily
-}));
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
-  standardHeaders: 'draft-8',
-  legacyHeaders: false,
-  message: { error: "Too many requests from this IP, please try again after 15 minutes." }
+// Security headers middleware
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  // CSP and COEP omitted to allow Vite inline scripts and heavy data URI images
+  next();
 });
-
-app.use("/api/", apiLimiter);
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
@@ -742,8 +736,14 @@ Active Characters: ${JSON.stringify(projectContext.characters || [])}`;
 app.post("/api/cloud-sync/save", (req, res) => {
   try {
     const { projectId = "snap-project-default", projectData, user = "Director" } = req.body;
+
+    // Security: Input validation to prevent type confusion / injection
+    if (typeof projectId !== "string" || typeof user !== "string") {
+      return res.status(400).json({ error: "Invalid input types for projectId or user." });
+    }
+
     projectStore.set(projectId, {
-      ...projectData,
+      ...(typeof projectData === "object" && projectData !== null ? projectData : {}),
       lastSyncedAt: new Date().toISOString(),
       updatedBy: user,
     });
