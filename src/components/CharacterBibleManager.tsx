@@ -102,8 +102,10 @@ export const CharacterBibleManager: React.FC<CharacterBibleManagerProps> = ({
             </div>
           </div>
           <button
-            onClick={onClose}
+            aria-label="Close" onClick={onClose}
             className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+            title="Close"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -280,6 +282,7 @@ export const CharacterBibleManager: React.FC<CharacterBibleManagerProps> = ({
                       onClick={() => startEdit(char)}
                       className="p-1 rounded text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800"
                       title="Edit character profile"
+                      aria-label="Edit character profile"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
@@ -287,6 +290,7 @@ export const CharacterBibleManager: React.FC<CharacterBibleManagerProps> = ({
                       onClick={() => deleteCharacter(char.id)}
                       className="p-1 rounded text-neutral-400 hover:text-red-400 hover:bg-neutral-800"
                       title="Delete character"
+                      aria-label="Delete character"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
