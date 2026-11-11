@@ -244,6 +244,7 @@ export const EditingSuiteModal: React.FC<EditingSuiteModalProps> = ({
             <button
               onClick={onClose}
               className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+              aria-label="Close editing suite"
             >
               <X className="w-5 h-5" />
             </button>
