@@ -1,3 +1,3 @@
-## 2026-11-10 - Debouncing LocalStorage for Large States
-**Learning:** Saving large application states containing base64 data URIs to `localStorage` synchronously during rapid events (like text input) causes main-thread blocking and UI freezes, as `JSON.stringify` can be very expensive.
-**Action:** Always debounce operations like state persistence to `localStorage` to prevent jank, especially when the state includes large strings.
+## 2026-11-11 - Debounce LocalStorage Saves
+**Learning:** Saving large JSON objects, especially those containing large base64 image strings, synchronously to `localStorage` on rapid state updates (like keystrokes or interval events) causes main-thread blocking and UI jank.
+**Action:** Always debounce background operations like `localStorage.setItem` using a `useRef` timeout when saving complex/large state to prevent performance degradation.

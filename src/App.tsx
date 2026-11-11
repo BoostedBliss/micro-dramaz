@@ -62,10 +62,7 @@ export default function App() {
         lastSavedAt: Date.now(),
       };
 
-      // ⚡ Bolt Performance Optimization:
-      // Debounce local storage saves. Writing large application states (with base64 images)
-      // synchronously on every keystroke blocks the main thread because JSON.stringify
-      // is expensive. Debouncing by 1000ms ensures the UI remains responsive during rapid updates.
+      // Debounce local storage save to prevent UI blocking from large JSON serialization
       if (localSaveTimerRef.current) {
         clearTimeout(localSaveTimerRef.current);
       }
