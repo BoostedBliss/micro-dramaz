@@ -141,6 +141,7 @@ export const TransitionBreakSelector: React.FC<TransitionBreakSelectorProps> = (
             meta.badgeColor
           } hover:scale-105 hover:border-amber-400/80`}
           title={`Click to customize transition between Beat ${fromBeatNumber} and Beat ${toBeatNumber}`}
+          aria-label={isOpen ? "Close transition settings" : "Open transition settings"}
         >
           <span className="flex items-center gap-1">
             {getTransitionIcon(currentTransition.type, "w-3.5 h-3.5 text-amber-400")}
@@ -186,6 +187,7 @@ export const TransitionBreakSelector: React.FC<TransitionBreakSelectorProps> = (
             <button
               onClick={() => setIsOpen(false)}
               className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-800 hover:bg-neutral-700 text-neutral-300"
+              aria-label="Close transition settings"
             >
               Done
             </button>
